@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Brompton - Clinician Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #005EB8;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #005EB8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #004a94;
+        }
+
+        .btn-success {
+            background: #007F3B;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #006030;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: #005EB8;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .patient-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #005EB8;
+        }
+
+        .equipment-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .equipment-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+        }
+
+        .equipment-item.selected {
+            border-color: #005EB8;
+            background: #f0f8ff;
+        }
+
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .equipment-type {
+            font-weight: 600;
+            color: #005EB8;
+            font-size: 1rem;
+        }
+
+        .sub-items {
+            margin-left: 20px;
+            margin-top: 10px;
+            padding-left: 15px;
+            border-left: 3px solid #41B6E6;
+        }
+
+        .checkbox-group {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .allowance-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .allowance-input input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #CCE5FF;
+            color: #003D7A;
+            border: 1px solid #005EB8;
+        }
+
+        .alert-success {
+            background: #D5F4E6;
+            color: #005F2B;
+            border: 1px solid #007F3B;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #005EB8;
+            border-bottom-color: #005EB8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .size-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .size-btn {
+            padding: 6px 12px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .size-btn.selected {
+            border-color: #005EB8;
+            background: #f0f8ff;
+            color: #005EB8;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Clinician Portal</h1>
+                <p style="font-size: 0.9rem; opacity: 0.9;">Sleep & Ventilation Equipment Management</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="loginScreen" class="content">
+            <h2>Clinician Login</h2>
+            <div class="alert alert-info">
+                <strong>Demo Mode:</strong> Use Staff ID: STAFF001, Password: clinician123
+            </div>
+            <form onsubmit="doLogin(event)">
+                <div class="form-group">
+                    <label>Staff ID</label>
+                    <input type="text" id="staffId" value="STAFF001" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="staffPass" value="clinician123" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="content hidden">
+            <!-- Patient Search -->
+            <div class="search-section">
+                <h2>Patient Management</h2>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search by NHS Number or Name" value="">
+                    <button class="btn btn-primary" onclick="searchPatient()">Search</button>
+                    <button class="btn btn-success" onclick="createNewProfile()">+ New Patient</button>
+                </div>
+            </div>
+
+            <!-- New Patient Form -->
+            <div id="newPatientForm" class="card hidden">
+                <h3>Create New Patient Profile</h3>
+                <p style="color: #666; margin-bottom: 20px;">Enter patient details to set up a new equipment profile</p>
+
+                <form onsubmit="saveNewPatient(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" id="newFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name *</label>
+                            <input type="text" id="newLastName" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>NHS Number *</label>
+                            <input type="text" id="newNHS" placeholder="1234567890" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth *</label>
+                            <input type="date" id="newDOB" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Device Type *</label>
+                        <select id="newDeviceType" required>
+                            <option value="">-- Select Device Type --</option>
+                            <option value="CPAP">CPAP</option>
+                            <option value="BiPAP">BiPAP/BiLevel</option>
+                            <option value="ASV">ASV (Adaptive Servo-Ventilation)</option>
+                            <option value="NIV">NIV (Non-Invasive Ventilation)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Diagnosis/Indication</label>
+                        <input type="text" id="newDiagnosis" placeholder="e.g., Obstructive Sleep Apnoea">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="tel" id="newPhone" placeholder="07XXX XXXXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="newEmail" placeholder="patient@example.com">
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn btn-success" style="flex: 1;">Create Profile</button>
+                        <button type="button" class="btn" style="flex: 1; background: #666; color: white;" onclick="cancelNewPatient()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Patient Profile Section -->
+            <div id="patientSection" class="hidden">
+                <div class="card">
+                    <h3>Patient Information</h3>
+                    <div class="patient-info">
+                        <div class="info-item">
+                            <span class="info-label">Name</span>
+                            <span class="info-value" id="patientName">John Smith</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">NHS Number</span>
+                            <span class="info-value" id="patientNHS">1234567890</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Patient ID</span>
+                            <span class="info-value" id="patientID">RBH-SV-12345</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Device Type</span>
+                            <span class="info-value" id="deviceType">CPAP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab(0)">Equipment Profile</button>
+                    <button class="tab" onclick="showTab(1)">Annual Allowances</button>
+                    <button class="tab" onclick="showTab(2)">Order History</button>
+                </div>
+
+                <!-- Equipment Profile Tab -->
+                <div id="tabEquipment" class="tab-content active">
+                    <div class="card">
+                        <h3>Configure Patient Equipment</h3>
+                        <p style="color: #666; margin-bottom: 20px;">Select the equipment and parts this patient is prescribed</p>
+
+                        <div class="equipment-grid">
+                            <!-- Device -->
+                            <div class="equipment-item">
+                                <div class="equipment-header">
+                                    <span class="equipment-type">Device</span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Select Device</label>
+                                    <select id="deviceSelect">
+                                        <option value="">-- Select Device --</option>
+                                        
+                                        <optgroup label="ResMed CPAP/APAP">
+                                            <option value="resmed-airsense10-autoset">ResMed AirSense 10 AutoSet</option>
+                                            <option value="resmed-airsense10-elite">ResMed AirSense 10 Elite</option>
+                                            <option value="resmed-airsense11-autoset">ResMed AirSense 11 AutoSet</option>
+                                            <option value="resmed-airmini">ResMed AirMini AutoSet</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="ResMed BiLevel/Ventilators">
+                                            <option value="resmed-aircurve10-vauto">ResMed AirCurve 10 VAuto</option>
+                                            <option value="resmed-aircurve10-s">ResMed AirCurve 10 S</option>
+                                            <option value="resmed-aircurve10-st">ResMed AirCurve 10 ST</option>
+                                            <option value="resmed-aircurve10-asv">ResMed AirCurve 10 ASV</option>
+                                            <option value="resmed-lumis-100">ResMed Lumis 100 VPAP S</option>
+                                            <option value="resmed-lumis-150">ResMed Lumis 150 VPAP ST</option>
+                                            <option value="resmed-stellar-100">ResMed Stellar 100</option>
+                                            <option value="resmed-stellar-150">ResMed Stellar 150</option>
+                                            <option value="resmed-astral-100">ResMed Astral 100</option>
+                                            <option value="resmed-astral-150">ResMed Astral 150</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips CPAP/APAP">
+                                            <option value="philips-dreamstation-auto">Philips DreamStation Auto CPAP</option>
+                                            <option value="philips-dreamstation-pro">Philips DreamStation Pro CPAP</option>
+                                            <option value="philips-dreamstation2-auto">Philips DreamStation 2 Auto CPAP</option>
+                                            <option value="philips-dreamstation2-advanced">Philips DreamStation 2 Advanced CPAP</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips BiLevel/Ventilators">
+                                            <option value="philips-dreamstation-bilevel">Philips DreamStation BiPAP Auto</option>
+                                            <option value="philips-dreamstation-bilevel-st">Philips DreamStation BiPAP ST</option>
+                                            <option value="philips-dreamstation-avaps">Philips DreamStation BiPAP AVAPS</option>
+                                            <option value="philips-trilogy100">Philips Trilogy 100</option>
+                                            <option value="philips-trilogy200">Philips Trilogy 200</option>
+                                            <option value="philips-trilogy-evo">Philips Trilogy Evo</option>
+                                            <option value="philips-trilogy-evo-o2">Philips Trilogy Evo O2</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Breas Devices">
+                                            <option value="breas-z1-auto">Breas Z1 Auto</option>
+                                            <option value="breas-z2-auto">Breas Z2 Auto</option>
+                                            <option value="breas-vivo-45">Breas Vivo 45</option>
+                                            <option value="breas-vivo-50">Breas Vivo 50</option>
+                                            <option value="breas-vivo-60">Breas Vivo 60</option>
+                                            <option value="breas-vivo-65">Breas Vivo 65</option>
+                                            <option value="breas-nippy3">Breas Nippy 3+</option>
+                                            <option value="breas-nippy4">Breas Nippy 4+</option>
+                                            <option value="breas-nippy-st">Breas Nippy ST</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Löwenstein Devices">
+                                            <option value="lowenstein-prisma20a">Löwenstein Prisma 20A</option>
+                                            <option value="lowenstein-prisma25s">Löwenstein Prisma 25S</option>
+                                            <option value="lowenstein-prisma30st">Löwenstein Prisma 30ST</option>
+                                            <option value="lowenstein-prismaline">Löwenstein Prisma Line</option>
+                                            <option value="lowenstein-prismasmart">Löwenstein Prisma Smart</option>
+                                            <option value="lowenstein-prismavent">Löwenstein PrismaVent</option>
+                                            <option value="lowenstein-joyce">Löwenstein Joyce</option>
+                                            <option value="lowenstein-luisa">Löwenstein Luisa</option>
+                                            <option value="lowenstein-ventimotion">Löwenstein VENTImotion 2</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Mask -->
+                            <div class="equipment-item selected">
+                                <div class="equipment-header">
+                                    <span class="equipment-type">Mask</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Select Mask Type</label>
+                                    <select id="maskSelect" onchange="updateMaskParts()">
+                                        <option value="">-- Select Mask --</option>
+                                        
+                                        <optgroup label="ResMed Full Face Masks">
+                                            <option value="resmed-f20">ResMed AirFit F20 Full Face</option>
+                                            <option value="resmed-f30">ResMed AirFit F30 Full Face</option>
+                                            <option value="resmed-f30i">ResMed AirFit F30i Full Face</option>
+                                            <option value="resmed-f40">ResMed AirFit F40 Full Face</option>
+                                            <option value="resmed-quattro-air">ResMed Quattro Air Full Face</option>
+                                            <option value="resmed-quattro-fx">ResMed Quattro FX Full Face</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="ResMed Nasal Masks">
+                                            <option value="resmed-n20">ResMed AirFit N20 Nasal</option>
+                                            <option value="resmed-n30">ResMed AirFit N30 Nasal</option>
+                                            <option value="resmed-n30i">ResMed AirFit N30i Nasal</option>
+                                            <option value="resmed-airtouch-n20">ResMed AirTouch N20 Nasal</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="ResMed Nasal Pillow Masks">
+                                            <option value="resmed-p10">ResMed AirFit P10 Nasal Pillow</option>
+                                            <option value="resmed-p30i">ResMed AirFit P30i Nasal Pillow</option>
+                                            <option value="resmed-swift-fx">ResMed Swift FX Nasal Pillow</option>
+                                            <option value="resmed-swift-fx-nano">ResMed Swift FX Nano</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips Full Face Masks">
+                                            <option value="philips-dreamwear-full">Philips DreamWear Full Face</option>
+                                            <option value="philips-dreamwear-under-nose">Philips DreamWear Under the Nose</option>
+                                            <option value="philips-amara-view">Philips Amara View</option>
+                                            <option value="philips-amara-gel">Philips Amara Gel</option>
+                                            <option value="philips-comfort-gel">Philips ComfortGel Blue Full Face</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips Nasal Masks">
+                                            <option value="philips-dreamwear-nasal">Philips DreamWear Nasal</option>
+                                            <option value="philips-wisp-nasal">Philips Wisp Nasal</option>
+                                            <option value="philips-respironics-pico">Philips Respironics Pico</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips Nasal Pillow Masks">
+                                            <option value="philips-dreamwear-pillow">Philips DreamWear Nasal Pillow</option>
+                                            <option value="philips-nuance-pro">Philips Nuance Pro Nasal Pillow</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Fisher & Paykel Full Face Masks">
+                                            <option value="fp-simplus">Fisher & Paykel Simplus Full Face</option>
+                                            <option value="fp-vitera">Fisher & Paykel Vitera Full Face</option>
+                                            <option value="fp-f5a">Fisher & Paykel F&P F5A Full Face</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Fisher & Paykel Nasal Masks">
+                                            <option value="fp-eson2">Fisher & Paykel Eson 2 Nasal</option>
+                                            <option value="fp-brevida">Fisher & Paykel Brevida Nasal</option>
+                                            <option value="fp-evora">Fisher & Paykel Evora Nasal</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Fisher & Paykel Nasal Pillow Masks">
+                                            <option value="fp-pilairo-q">Fisher & Paykel Pilairo Q</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Mask Size</label>
+                                    <div class="size-selector">
+                                        <button type="button" class="size-btn" onclick="selectSize('Petite')">Petite</button>
+                                        <button type="button" class="size-btn" onclick="selectSize('Small')">Small</button>
+                                        <button type="button" class="size-btn selected" onclick="selectSize('Medium')">Medium</button>
+                                        <button type="button" class="size-btn" onclick="selectSize('Large')">Large</button>
+                                        <button type="button" class="size-btn" onclick="selectSize('Wide')">Wide</button>
+                                    </div>
+                                </div>
+
+                                <div class="sub-items">
+                                    <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; color: #005EB8;">
+                                        Available Parts (patients can order these separately):
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="part-cushion" checked>
+                                        <label for="part-cushion">Mask Cushion</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="part-headgear" checked>
+                                        <label for="part-headgear">Headgear/Straps</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="part-elbow" checked>
+                                        <label for="part-elbow">Elbow/Swivel</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tubing -->
+                            <div class="equipment-item">
+                                <div class="equipment-header">
+                                    <span class="equipment-type">Tubing</span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Select Tubing</label>
+                                    <select id="tubingSelect">
+                                        <option value="">-- Select Tubing --</option>
+                                        
+                                        <optgroup label="ResMed Tubing">
+                                            <option value="resmed-slimline">ResMed SlimLine Tubing (6ft)</option>
+                                            <option value="resmed-climateline">ResMed ClimateLineAir Heated (6ft)</option>
+                                            <option value="resmed-climateline-oxy">ResMed ClimateLineAir Oxy (6ft)</option>
+                                            <option value="resmed-standard">ResMed Standard Tubing (6ft)</option>
+                                            <option value="resmed-standard-10ft">ResMed Standard Tubing (10ft)</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips Tubing">
+                                            <option value="philips-standard-6ft">Philips Standard Tubing (6ft)</option>
+                                            <option value="philips-standard-10ft">Philips Standard Tubing (10ft)</option>
+                                            <option value="philips-standard-12mm">Philips 12mm Tubing (6ft)</option>
+                                            <option value="philips-heated">Philips Heated Tubing (6ft)</option>
+                                            <option value="philips-slimline">Philips SlimLine Tubing (6ft)</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Fisher & Paykel Tubing">
+                                            <option value="fp-standard">Fisher & Paykel Standard Tubing (6ft)</option>
+                                            <option value="fp-sensawake">Fisher & Paykel SensAwake Tubing (6ft)</option>
+                                            <option value="fp-tubingslim">Fisher & Paykel TubingSlim (6ft)</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Universal/Generic">
+                                            <option value="universal-22mm-6ft">Universal 22mm Tubing (6ft)</option>
+                                            <option value="universal-22mm-10ft">Universal 22mm Tubing (10ft)</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Filters -->
+                            <div class="equipment-item">
+                                <div class="equipment-header">
+                                    <span class="equipment-type">Filters</span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Select Filter Type</label>
+                                    <select id="filterSelect">
+                                        <option value="">-- Select Filter --</option>
+                                        
+                                        <optgroup label="ResMed Filters">
+                                            <option value="resmed-airsense10-ultrafine">ResMed AirSense 10 Ultra-Fine (White)</option>
+                                            <option value="resmed-airsense10-standard">ResMed AirSense 10 Standard (Grey)</option>
+                                            <option value="resmed-airsense11-ultrafine">ResMed AirSense 11 Ultra-Fine</option>
+                                            <option value="resmed-s9-ultrafine">ResMed S9 Ultra-Fine</option>
+                                            <option value="resmed-s9-standard">ResMed S9 Standard</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips Filters">
+                                            <option value="philips-dreamstation-ultrafine">Philips DreamStation Ultra-Fine Filter</option>
+                                            <option value="philips-dreamstation-disposable">Philips DreamStation Disposable Filter (Pollen)</option>
+                                            <option value="philips-dreamstation-reusable">Philips DreamStation Reusable Filter</option>
+                                            <option value="philips-dreamstation2-filter">Philips DreamStation 2 Filter</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Fisher & Paykel Filters">
+                                            <option value="fp-sleepstyle-filter">Fisher & Paykel SleepStyle Filter</option>
+                                            <option value="fp-icon-filter">Fisher & Paykel Icon Filter</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Breas Filters">
+                                            <option value="breas-z1-filter">Breas Z1/Z2 Filter</option>
+                                            <option value="breas-vivo-filter">Breas Vivo Filter</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Löwenstein Filters">
+                                            <option value="lowenstein-prisma-filter">Löwenstein Prisma Filter</option>
+                                            <option value="lowenstein-joyce-filter">Löwenstein Joyce Filter</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Humidifier -->
+                            <div class="equipment-item">
+                                <div class="equipment-header">
+                                    <span class="equipment-type">Humidifier</span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Select Humidifier Chamber</label>
+                                    <select id="humidifierSelect">
+                                        <option value="">-- Select Humidifier --</option>
+                                        
+                                        <optgroup label="ResMed Humidifiers">
+                                            <option value="resmed-airsense10-chamber">ResMed AirSense 10 Standard Chamber</option>
+                                            <option value="resmed-airsense10-climateline">ResMed AirSense 10 ClimateLineAir Chamber</option>
+                                            <option value="resmed-airsense11-chamber">ResMed AirSense 11 Standard Chamber</option>
+                                            <option value="resmed-s9-chamber">ResMed S9 H5i Chamber</option>
+                                            <option value="resmed-climateline-oxy">ResMed ClimateLineAir Oxy Chamber</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Philips Humidifiers">
+                                            <option value="philips-dreamstation-chamber">Philips DreamStation Standard Chamber</option>
+                                            <option value="philips-dreamstation-heated">Philips DreamStation Heated Chamber</option>
+                                            <option value="philips-dreamstation2-chamber">Philips DreamStation 2 Chamber</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Fisher & Paykel Humidifiers">
+                                            <option value="fp-sleepstyle-chamber">Fisher & Paykel SleepStyle Chamber</option>
+                                            <option value="fp-icon-chamber">Fisher & Paykel Icon Chamber</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Breas Humidifiers">
+                                            <option value="breas-vivo-chamber">Breas Vivo Humidifier Chamber</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Löwenstein Humidifiers">
+                                            <option value="lowenstein-prisma-chamber">Löwenstein Prisma Humidifier Chamber</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="No Humidifier">
+                                            <option value="none">Not using humidifier</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success" onclick="saveEquipment()" style="width: 100%; margin-top: 20px;">
+                            Save Equipment Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Annual Allowances Tab -->
+                <div id="tabAllowances" class="tab-content">
+                    <div class="card">
+                        <h3>Set Annual Allowances</h3>
+                        <p style="color: #666; margin-bottom: 20px;">Configure how many items the patient can order per year</p>
+
+                        <div class="allowance-input">
+                            <label style="flex: 1; font-weight: 600;">Complete CPAP Masks:</label>
+                            <input type="number" id="allowance-masks" value="2" min="0" max="12">
+                            <span style="color: #666;">per year</span>
+                        </div>
+
+                        <div class="allowance-input">
+                            <label style="flex: 1; font-weight: 600;">Mask Cushions:</label>
+                            <input type="number" id="allowance-cushions" value="4" min="0" max="24">
+                            <span style="color: #666;">per year</span>
+                        </div>
+
+                        <div class="allowance-input">
+                            <label style="flex: 1; font-weight: 600;">Headgear/Straps:</label>
+                            <input type="number" id="allowance-headgear" value="2" min="0" max="12">
+                            <span style="color: #666;">per year</span>
+                        </div>
+
+                        <div class="allowance-input">
+                            <label style="flex: 1; font-weight: 600;">Elbow/Swivel:</label>
+                            <input type="number" id="allowance-elbow" value="2" min="0" max="12">
+                            <span style="color: #666;">per year</span>
+                        </div>
+
+                        <div class="allowance-input">
+                            <label style="flex: 1; font-weight: 600;">Tubing:</label>
+                            <input type="number" id="allowance-tubing" value="4" min="0" max="12">
+                            <span style="color: #666;">per year</span>
+                        </div>
+
+                        <div class="allowance-input">
+                            <label style="flex: 1; font-weight: 600;">Filters:</label>
+                            <input type="number" id="allowance-filters" value="12" min="0" max="52">
+                            <span style="color: #666;">per year</span>
+                        </div>
+
+                        <div class="allowance-input">
+                            <label style="flex: 1; font-weight: 600;">Humidifier Chambers:</label>
+                            <input type="number" id="allowance-humidifier" value="2" min="0" max="12">
+                            <span style="color: #666;">per year</span>
+                        </div>
+
+                        <div style="margin-top: 20px; padding: 15px; background: #FFF4CC; border-radius: 8px;">
+                            <strong>Note:</strong> Allowances reset annually on January 1st. Orders exceeding allowances will require clinician approval.
+                        </div>
+
+                        <button class="btn btn-success" onclick="saveAllowances()" style="width: 100%; margin-top: 20px;">
+                            Save Allowances
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Order History Tab -->
+                <div id="tabHistory" class="tab-content">
+                    <div class="card">
+                        <h3>Patient Order History</h3>
+                        <p style="color: #666; margin-bottom: 20px;">Recent orders and support requests</p>
+
+                        <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <strong>Order #127</strong>
+                                <span style="background: #D5F4E6; color: #005F2B; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">COMPLETED</span>
+                            </div>
+                            <div style="color: #666; margin-bottom: 5px;">
+                                2x Filters (ResMed Ultra-Fine), 1x Tubing (ResMed SlimLine 6ft)
+                            </div>
+                            <div style="color: #999; font-size: 0.9rem;">5 Feb 2026 • Dispatched 6 Feb 2026</div>
+                        </div>
+
+                        <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <strong>Support Request #89</strong>
+                                <span style="background: #D5F4E6; color: #005F2B; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">RESOLVED</span>
+                            </div>
+                            <div style="color: #666; margin-bottom: 5px;">
+                                Technical Support: Device making unusual noise
+                            </div>
+                            <div style="color: #999; font-size: 0.9rem;">28 Jan 2026 • Resolved by Dr. Patel</div>
+                        </div>
+
+                        <div style="border: 1px solid #FFB81C; border-radius: 8px; padding: 15px; background: #FFF4CC;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <strong>Order #123</strong>
+                                <span style="background: #FFB81C; color: #2c3e50; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">PENDING APPROVAL</span>
+                            </div>
+                            <div style="color: #666; margin-bottom: 5px;">
+                                1x Complete CPAP Mask (ResMed AirFit F20 Medium) - Exceeds annual allowance
+                            </div>
+                            <div style="color: #999; font-size: 0.9rem; margin-bottom: 10px;">15 Jan 2026</div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-success" style="flex: 1;" onclick="approveOrder(123)">Approve</button>
+                                <button class="btn" style="flex: 1; background: #DA291C; color: white;" onclick="rejectOrder(123)">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var selectedSize = 'Medium';
+
+        function doLogin(e) {
+            e.preventDefault();
+            var staffId = document.getElementById('staffId').value;
+            var pass = document.getElementById('staffPass').value;
+
+            if (staffId === 'STAFF001' && pass === 'clinician123') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+            } else {
+                alert('Invalid credentials. Use Staff ID: STAFF001, Password: clinician123');
+            }
+            return false;
+        }
+
+        function logout() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainContent').classList.add('hidden');
+            document.getElementById('patientSection').classList.add('hidden');
+        }
+
+        function searchPatient() {
+            var search = document.getElementById('searchInput').value;
+            if (search === '1234567890' || search.toLowerCase().includes('john')) {
+                document.getElementById('patientSection').classList.remove('hidden');
+                document.getElementById('newPatientForm').classList.add('hidden');
+            } else {
+                alert('Patient not found. Try searching for: 1234567890 or John Smith\n\nOr click "+ New Patient" to create a new profile.');
+            }
+        }
+
+        function createNewProfile() {
+            document.getElementById('newPatientForm').classList.remove('hidden');
+            document.getElementById('patientSection').classList.add('hidden');
+            // Scroll to form
+            document.getElementById('newPatientForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelNewPatient() {
+            document.getElementById('newPatientForm').classList.add('hidden');
+            document.getElementById('newPatientForm').querySelector('form').reset();
+        }
+
+        function saveNewPatient(e) {
+            e.preventDefault();
+            
+            var firstName = document.getElementById('newFirstName').value;
+            var lastName = document.getElementById('newLastName').value;
+            var nhs = document.getElementById('newNHS').value;
+            var dob = document.getElementById('newDOB').value;
+            var deviceType = document.getElementById('newDeviceType').value;
+            
+            // Generate patient ID
+            var patientId = 'RBH-SV-' + Math.floor(10000 + Math.random() * 90000);
+            
+            // Update patient info display
+            document.getElementById('patientName').textContent = firstName + ' ' + lastName;
+            document.getElementById('patientNHS').textContent = nhs;
+            document.getElementById('patientID').textContent = patientId;
+            document.getElementById('deviceType').textContent = deviceType;
+            
+            // Hide form and show patient section
+            document.getElementById('newPatientForm').classList.add('hidden');
+            document.getElementById('patientSection').classList.remove('hidden');
+            
+            // Reset form
+            e.target.reset();
+            
+            // Show success message
+            alert('✓ New Patient Profile Created!\n\n' +
+                  'Patient: ' + firstName + ' ' + lastName + '\n' +
+                  'Patient ID: ' + patientId + '\n\n' +
+                  'Now configure their equipment and allowances below.');
+            
+            // Scroll to patient section
+            document.getElementById('patientSection').scrollIntoView({ behavior: 'smooth' });
+            
+            return false;
+        }
+
+        function showTab(index) {
+            var tabs = document.querySelectorAll('.tab');
+            var contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(function(tab, i) {
+                if (i === index) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            contents.forEach(function(content, i) {
+                if (i === index) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        function selectSize(size) {
+            selectedSize = size;
+            document.querySelectorAll('.size-btn').forEach(function(btn) {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function updateMaskParts() {
+            // In a real system, this would update available parts based on mask type
+            console.log('Mask type changed');
+        }
+
+        function saveEquipment() {
+            var device = document.getElementById('deviceSelect').value;
+            var mask = document.getElementById('maskSelect').value;
+            var tubing = document.getElementById('tubingSelect').value;
+            var filter = document.getElementById('filterSelect').value;
+            var humidifier = document.getElementById('humidifierSelect').value;
+
+            if (!device || !mask || !tubing || !filter || !humidifier) {
+                alert('Please select all equipment items before saving.');
+                return;
+            }
+
+            var parts = [];
+            if (document.getElementById('part-cushion').checked) parts.push('Cushion');
+            if (document.getElementById('part-headgear').checked) parts.push('Headgear');
+            if (document.getElementById('part-elbow').checked) parts.push('Elbow');
+
+            alert('✓ Equipment Profile Saved Successfully!\n\nDevice: ' + document.getElementById('deviceSelect').options[document.getElementById('deviceSelect').selectedIndex].text + 
+                  '\nMask: ' + document.getElementById('maskSelect').options[document.getElementById('maskSelect').selectedIndex].text + ' (' + selectedSize + ')' +
+                  '\nAvailable Parts: ' + parts.join(', ') +
+                  '\n\nThis configuration will now appear in the patient\'s portal.');
+        }
+
+        function saveAllowances() {
+            var masks = document.getElementById('allowance-masks').value;
+            var cushions = document.getElementById('allowance-cushions').value;
+            var headgear = document.getElementById('allowance-headgear').value;
+            var elbow = document.getElementById('allowance-elbow').value;
+            var tubing = document.getElementById('allowance-tubing').value;
+            var filters = document.getElementById('allowance-filters').value;
+            var humidifier = document.getElementById('allowance-humidifier').value;
+
+            alert('✓ Annual Allowances Saved!\n\n' +
+                  'Complete Masks: ' + masks + '\n' +
+                  'Cushions: ' + cushions + '\n' +
+                  'Headgear: ' + headgear + '\n' +
+                  'Elbows: ' + elbow + '\n' +
+                  'Tubing: ' + tubing + '\n' +
+                  'Filters: ' + filters + '\n' +
+                  'Humidifier Chambers: ' + humidifier);
+        }
+
+        function approveOrder(orderId) {
+            alert('Order #' + orderId + ' approved!\n\nPatient will be notified and items will be dispatched within 3-5 working days.');
+        }
+
+        function rejectOrder(orderId) {
+            var reason = prompt('Please provide a reason for rejection:');
+            if (reason) {
+                alert('Order #' + orderId + ' rejected.\n\nPatient will be notified with the reason: ' + reason);
+            }
+        }
+    </script>
+</body>
+</html>

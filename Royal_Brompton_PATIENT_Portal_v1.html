@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Brompton - Patient Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #005EB8;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            background: #CCE5FF;
+            border: 1px solid #005EB8;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #003D7A;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #005EB8;
+            color: white;
+        }
+
+        .btn:hover {
+            background: #004a94;
+        }
+
+        .btn-success {
+            background: #007F3B;
+        }
+
+        .btn-success:hover {
+            background: #006030;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #005EB8;
+            margin-bottom: 15px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f5f7fa;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: #005EB8;
+            border-bottom-color: #005EB8;
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .qty-control {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .qty-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #005EB8;
+            background: white;
+            color: #005EB8;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.3;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #D5F4E6;
+            color: #005F2B;
+        }
+
+        .badge-warning {
+            background: #FFF4CC;
+            color: #8B6914;
+        }
+
+        .request-item {
+            padding: 15px;
+            border-left: 4px solid #FFB81C;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Royal Brompton Hospital</h1>
+            <p>Sleep & Ventilation Department</p>
+        </div>
+
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="content">
+            <h2>Patient Portal Login</h2>
+            <p style="color: #666; margin-bottom: 20px;">Access your equipment and support services</p>
+            
+            <div class="alert">
+                <strong>Demo Mode:</strong> Use NHS Number: 1234567890, Password: demo123
+            </div>
+
+            <form onsubmit="doLogin(event)">
+                <div class="form-group">
+                    <label>NHS Number</label>
+                    <input type="text" id="nhsNum" value="1234567890" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="pass" value="demo123" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="hidden">
+            <div class="header">
+                <h2 id="welcomeMsg">Welcome back, John Smith!</h2>
+                <p>Patient ID: RBH-SV-12345</p>
+                <button class="logout-btn" onclick="doLogout()">Logout</button>
+            </div>
+
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab(0)">Home</button>
+                <button class="nav-tab" onclick="showTab(1)">Order</button>
+                <button class="nav-tab" onclick="showTab(2)">Support</button>
+                <button class="nav-tab" onclick="showTab(3)">History</button>
+            </div>
+
+            <!-- HOME TAB -->
+            <div id="tab0" class="tab-content active">
+                <div class="card">
+                    <h3>Your Prescribed Equipment</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Current device and consumables</p>
+                    <div class="item-row">
+                        <span style="color: #666;">Device:</span>
+                        <span><strong>ResMed AirSense 10 AutoSet</strong></span>
+                    </div>
+                    <div class="item-row">
+                        <span style="color: #666;">Mask:</span>
+                        <span><strong>ResMed AirFit F20 Full Face (Medium)</strong></span>
+                    </div>
+                    <div class="item-row">
+                        <span style="color: #666;">Tubing:</span>
+                        <span><strong>ResMed SlimLine Tubing (6ft)</strong></span>
+                    </div>
+                    <div class="item-row">
+                        <span style="color: #666;">Filters:</span>
+                        <span><strong>ResMed Ultra-Fine (White)</strong></span>
+                    </div>
+                    <div class="item-row" style="border-bottom: none;">
+                        <span style="color: #666;">Humidifier:</span>
+                        <span><strong>ResMed ClimateLineAir Chamber</strong></span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Your Equipment Allowances</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Annual allowance resets on 1st January</p>
+                    <div class="item-row">
+                        <span>CPAP Masks</span>
+                        <span><strong>1</strong> of 2 left</span>
+                    </div>
+                    <div class="item-row">
+                        <span>Tubing</span>
+                        <span><strong>2</strong> of 4 left</span>
+                    </div>
+                    <div class="item-row">
+                        <span>Filters</span>
+                        <span><strong>8</strong> of 12 left</span>
+                    </div>
+                    <div class="item-row" style="border-bottom: none;">
+                        <span>Humidifier Chambers</span>
+                        <span><strong>1</strong> of 2 left</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Quick Actions</h3>
+                    <button class="btn" onclick="showTab(1)" style="margin-bottom: 10px;">📦 Order Supplies</button>
+                    <button class="btn" onclick="showTab(2)">🔧 Request Support</button>
+                </div>
+            </div>
+
+            <!-- ORDER TAB -->
+            <div id="tab1" class="tab-content">
+                <div class="card">
+                    <h3>Order Consumables</h3>
+                    <p style="color: #666; margin-bottom: 20px;">
+                        Select items below. Orders exceeding allowance require clinician approval.
+                    </p>
+                    
+                    <div style="border-bottom: 2px solid #005EB8; padding-bottom: 10px; margin-bottom: 10px;">
+                        <div class="item-row" style="border-bottom: none; padding-bottom: 0;">
+                            <div>
+                                <div><strong>CPAP Masks (Complete)</strong></div>
+                                <div style="font-size: 0.85rem; color: #005EB8; font-weight: 500;">ResMed AirFit F20 Full Face (Medium)</div>
+                                <div style="font-size: 0.85rem; color: #666;">1 available this year</div>
+                            </div>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('masks', -1)" id="masks-minus">−</button>
+                                <span id="masks-qty" style="min-width: 30px; text-align: center;">0</span>
+                                <button type="button" class="qty-btn" onclick="changeQty('masks', 1)">+</button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 15px; padding-left: 15px; border-left: 3px solid #41B6E6;">
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #005EB8; margin-bottom: 10px;">Or order individual parts:</div>
+                            
+                            <div class="item-row" style="padding: 8px 0;">
+                                <div>
+                                    <div style="font-size: 0.9rem;"><strong>Mask Cushion</strong></div>
+                                    <div style="font-size: 0.8rem; color: #666;">ResMed AirFit F20 (Medium)</div>
+                                </div>
+                                <div class="qty-control">
+                                    <button type="button" class="qty-btn" onclick="changeQty('cushion', -1)" id="cushion-minus" style="width: 32px; height: 32px; font-size: 1rem;">−</button>
+                                    <span id="cushion-qty" style="min-width: 25px; text-align: center; font-size: 1rem;">0</span>
+                                    <button type="button" class="qty-btn" onclick="changeQty('cushion', 1)" style="width: 32px; height: 32px; font-size: 1rem;">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="item-row" style="padding: 8px 0;">
+                                <div>
+                                    <div style="font-size: 0.9rem;"><strong>Headgear/Straps</strong></div>
+                                    <div style="font-size: 0.8rem; color: #666;">ResMed AirFit F20</div>
+                                </div>
+                                <div class="qty-control">
+                                    <button type="button" class="qty-btn" onclick="changeQty('headgear', -1)" id="headgear-minus" style="width: 32px; height: 32px; font-size: 1rem;">−</button>
+                                    <span id="headgear-qty" style="min-width: 25px; text-align: center; font-size: 1rem;">0</span>
+                                    <button type="button" class="qty-btn" onclick="changeQty('headgear', 1)" style="width: 32px; height: 32px; font-size: 1rem;">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="item-row" style="padding: 8px 0; border-bottom: none;">
+                                <div>
+                                    <div style="font-size: 0.9rem;"><strong>Elbow/Swivel</strong></div>
+                                    <div style="font-size: 0.8rem; color: #666;">ResMed AirFit F20</div>
+                                </div>
+                                <div class="qty-control">
+                                    <button type="button" class="qty-btn" onclick="changeQty('elbow', -1)" id="elbow-minus" style="width: 32px; height: 32px; font-size: 1rem;">−</button>
+                                    <span id="elbow-qty" style="min-width: 25px; text-align: center; font-size: 1rem;">0</span>
+                                    <button type="button" class="qty-btn" onclick="changeQty('elbow', 1)" style="width: 32px; height: 32px; font-size: 1rem;">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item-row">
+                        <div>
+                            <div><strong>Tubing</strong></div>
+                            <div style="font-size: 0.85rem; color: #005EB8; font-weight: 500;">ResMed SlimLine Tubing (6ft)</div>
+                            <div style="font-size: 0.85rem; color: #666;">2 available this year</div>
+                        </div>
+                        <div class="qty-control">
+                            <button type="button" class="qty-btn" onclick="changeQty('tubing', -1)" id="tubing-minus">−</button>
+                            <span id="tubing-qty" style="min-width: 30px; text-align: center;">0</span>
+                            <button type="button" class="qty-btn" onclick="changeQty('tubing', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="item-row">
+                        <div>
+                            <div><strong>Filters</strong></div>
+                            <div style="font-size: 0.85rem; color: #005EB8; font-weight: 500;">ResMed Ultra-Fine (White)</div>
+                            <div style="font-size: 0.85rem; color: #666;">8 available this year</div>
+                        </div>
+                        <div class="qty-control">
+                            <button type="button" class="qty-btn" onclick="changeQty('filters', -1)" id="filters-minus">−</button>
+                            <span id="filters-qty" style="min-width: 30px; text-align: center;">0</span>
+                            <button type="button" class="qty-btn" onclick="changeQty('filters', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="item-row" style="border-bottom: none;">
+                        <div>
+                            <div><strong>Humidifier Chambers</strong></div>
+                            <div style="font-size: 0.85rem; color: #005EB8; font-weight: 500;">ResMed ClimateLineAir Chamber</div>
+                            <div style="font-size: 0.85rem; color: #666;">1 available this year</div>
+                        </div>
+                        <div class="qty-control">
+                            <button type="button" class="qty-btn" onclick="changeQty('humidifier', -1)" id="humidifier-minus">−</button>
+                            <span id="humidifier-qty" style="min-width: 30px; text-align: center;">0</span>
+                            <button type="button" class="qty-btn" onclick="changeQty('humidifier', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="orderSummary" class="hidden">
+                    <button class="btn btn-success" onclick="submitOrder()">Submit Order</button>
+                </div>
+            </div>
+
+            <!-- SUPPORT TAB -->
+            <div id="tab2" class="tab-content">
+                <!-- Troubleshooting Guide -->
+                <div class="card">
+                    <h3>Common Issues & Solutions</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Try these solutions first - they resolve most issues quickly</p>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="toggleTroubleshoot('power')" style="width: 100%; text-align: left; margin-bottom: 8px;">
+                            ⚡ Device Won't Turn On / No Power
+                        </button>
+                        <div id="troubleshoot-power" class="hidden" style="padding: 15px; background: #f5f7fa; border-radius: 8px; margin-bottom: 10px;">
+                            <h4 style="color: #005EB8; margin-bottom: 10px;">Quick Checks:</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li>Check the power cable is firmly connected at both ends</li>
+                                <li>Try a different power outlet</li>
+                                <li>Check the power switch on the back of the device is ON</li>
+                                <li>If using a power strip, ensure it's switched on</li>
+                                <li>Look for any lights on the device - even dim ones</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>Still not working?</strong> This may be a device fault - please submit a support request below and mark it as urgent.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="toggleTroubleshoot('leak')" style="width: 100%; text-align: left; margin-bottom: 8px;">
+                            💨 Mask Leaking / Poor Seal
+                        </button>
+                        <div id="troubleshoot-leak" class="hidden" style="padding: 15px; background: #f5f7fa; border-radius: 8px; margin-bottom: 10px;">
+                            <h4 style="color: #005EB8; margin-bottom: 10px;">Try These Steps:</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li><strong>Loosen the straps</strong> - Over-tightening often causes more leaks</li>
+                                <li><strong>Check mask position</strong> - Should sit on the bridge of your nose, not too high or low</li>
+                                <li><strong>Clean the cushion</strong> - Wash daily with mild soap and water</li>
+                                <li><strong>Check for wear</strong> - Cushions should be replaced every 3-6 months</li>
+                                <li><strong>Facial hair?</strong> - Even stubble can cause leaks - try a different mask style</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>Need a replacement cushion?</strong> You can order one in the "Order" tab above.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="toggleTroubleshoot('noise')" style="width: 100%; text-align: left; margin-bottom: 8px;">
+                            🔊 Device Making Noise / Unusual Sounds
+                        </button>
+                        <div id="troubleshoot-noise" class="hidden" style="padding: 15px; background: #f5f7fa; border-radius: 8px; margin-bottom: 10px;">
+                            <h4 style="color: #005EB8; margin-bottom: 10px;">Common Causes:</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li><strong>Dirty filter</strong> - Check and replace if grey/dirty (see "Order" tab)</li>
+                                <li><strong>Blocked air inlet</strong> - Ensure nothing is covering the air inlet on the device</li>
+                                <li><strong>Tubing position</strong> - Make sure tubing isn't kinked or twisted</li>
+                                <li><strong>Water in tubing</strong> - If using heated humidifier, condensation can cause gurgling - drain it</li>
+                                <li><strong>Mask vent</strong> - Some noise from mask vent holes is normal</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>High-pitched whistling or grinding?</strong> This isn't normal - please submit a support request.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="toggleTroubleshoot('pressure')" style="width: 100%; text-align: left; margin-bottom: 8px;">
+                            😮‍💨 Pressure Too High / Too Low / Uncomfortable
+                        </button>
+                        <div id="troubleshoot-pressure" class="hidden" style="padding: 15px; background: #f5f7fa; border-radius: 8px; margin-bottom: 10px;">
+                            <h4 style="color: #005EB8; margin-bottom: 10px;">What You Can Try:</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li><strong>Ramp feature</strong> - Check if your device has "ramp" mode - this starts at lower pressure</li>
+                                <li><strong>EPR/C-Flex</strong> - Some devices have pressure relief on exhale - check your settings menu</li>
+                                <li><strong>Mouth breathing?</strong> - If using nasal mask and breathing through mouth, you may need a chin strap or full face mask</li>
+                                <li><strong>Give it time</strong> - It can take 2-4 weeks to adjust to therapy</li>
+                            </ul>
+                            <p style="margin-top: 10px; padding: 10px; background: #FFF4CC; border-radius: 6px;">
+                                <strong>⚠️ Important:</strong> Do NOT adjust pressure settings yourself. If pressure feels wrong, request a clinician callback below - settings may need professional adjustment.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="toggleTroubleshoot('dry')" style="width: 100%; text-align: left; margin-bottom: 8px;">
+                            😶 Dry Nose/Throat / Congestion
+                        </button>
+                        <div id="troubleshoot-dry" class="hidden" style="padding: 15px; background: #f5f7fa; border-radius: 8px; margin-bottom: 10px;">
+                            <h4 style="color: #005EB8; margin-bottom: 10px;">Solutions:</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li><strong>Increase humidifier setting</strong> - Turn up the humidity level on your device</li>
+                                <li><strong>Use heated tubing</strong> - Prevents condensation and improves humidity delivery</li>
+                                <li><strong>Room humidity</strong> - Consider a bedroom humidifier in dry months</li>
+                                <li><strong>Nasal saline spray</strong> - Use before bed (check with GP if unsure)</li>
+                                <li><strong>Water level</strong> - Ensure humidifier chamber has water</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>Need a new humidifier chamber?</strong> You can order one in the "Order" tab.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="toggleTroubleshoot('marks')" style="width: 100%; text-align: left; margin-bottom: 8px;">
+                            😣 Red Marks / Skin Irritation from Mask
+                        </button>
+                        <div id="troubleshoot-marks" class="hidden" style="padding: 15px; background: #f5f7fa; border-radius: 8px; margin-bottom: 10px;">
+                            <h4 style="color: #005EB8; margin-bottom: 10px;">How to Reduce Marks:</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li><strong>Loosen the straps</strong> - Mask should be snug but not tight</li>
+                                <li><strong>Adjust headgear</strong> - May need repositioning for even pressure</li>
+                                <li><strong>Clean mask daily</strong> - Oils from skin can cause irritation</li>
+                                <li><strong>Try different size</strong> - May need a different size cushion</li>
+                                <li><strong>Moisturise</strong> - Use gentle, unscented moisturiser on contact areas (avoid inside nose)</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>Persistent sores or skin breakdown?</strong> Request a clinician callback - you may need a different mask style.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline" onclick="toggleTroubleshoot('error')" style="width: 100%; text-align: left; margin-bottom: 8px;">
+                            ⚠️ Error Message on Display
+                        </button>
+                        <div id="troubleshoot-error" class="hidden" style="padding: 15px; background: #f5f7fa; border-radius: 8px; margin-bottom: 10px;">
+                            <h4 style="color: #005EB8; margin-bottom: 10px;">Common Error Messages:</h4>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li><strong>"Check Tube" / "Tube Blocked"</strong> - Check tubing for kinks, blockages, or water</li>
+                                <li><strong>"Check Mask"</strong> - Ensure mask is properly connected to tubing</li>
+                                <li><strong>"Check Filter"</strong> - Replace filter (see "Order" tab)</li>
+                                <li><strong>"Check Water Chamber"</strong> - Ensure humidifier chamber is properly seated</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>Different error or persists after checks?</strong> Note down the exact error message and submit a support request below.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Still Need Help Section -->
+                <div class="card">
+                    <h3>Still Need Help?</h3>
+                    <p style="color: #666; margin-bottom: 20px;">If the troubleshooting tips above didn't solve your issue, submit a request below</p>
+                    
+                    <form onsubmit="submitSupport(event)">
+                        <div class="form-group">
+                            <label>Type of Support</label>
+                            <select id="supportType" required>
+                                <option value="">Select...</option>
+                                <option value="technical">Technical Issue with Device</option>
+                                <option value="callback">Request Clinician Callback</option>
+                                <option value="equipment">Equipment Concern</option>
+                                <option value="other">Other Query</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="urgent">
+                                Mark as Urgent (for breathing difficulties or device failure)
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="supportDesc" placeholder="Please describe your issue and what troubleshooting steps you've already tried..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- HISTORY TAB -->
+            <div id="tab3" class="tab-content">
+                <div class="card">
+                    <h3>Request History</h3>
+                    <div class="request-item">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong>Order</strong>
+                            <span class="badge badge-success">COMPLETED</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">2x Filters, 1x Tubing</div>
+                        <div style="color: #999; font-size: 0.85rem; margin-top: 5px;">5 Feb 2026</div>
+                    </div>
+
+                    <div class="request-item">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong>Technical Support</strong>
+                            <span class="badge badge-success">APPROVED</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">Device making unusual noise</div>
+                        <div style="color: #999; font-size: 0.85rem; margin-top: 5px;">28 Jan 2026</div>
+                    </div>
+
+                    <div class="request-item">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong>Order</strong>
+                            <span class="badge badge-warning">PENDING</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">1x CPAP Mask (requires approval)</div>
+                        <div style="color: #999; font-size: 0.85rem; margin-top: 5px;">15 Jan 2026</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Contact Statistics</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="text-align: center; padding: 15px; background: #f5f7fa; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #005EB8;">3</div>
+                            <div style="font-size: 0.85rem; color: #666;">Total Contacts</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #f5f7fa; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #007F3B;">1</div>
+                            <div style="font-size: 0.85rem; color: #666;">This Month</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var cart = {
+            masks: 0,
+            cushion: 0,
+            headgear: 0,
+            elbow: 0,
+            tubing: 0,
+            filters: 0,
+            humidifier: 0
+        };
+
+        function doLogin(e) {
+            e.preventDefault();
+            
+            var nhs = document.getElementById('nhsNum').value;
+            var pwd = document.getElementById('pass').value;
+            
+            if (nhs === '1234567890' && pwd === 'demo123') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+            } else {
+                alert('Invalid credentials. Please use NHS Number: 1234567890 and Password: demo123');
+            }
+            
+            return false;
+        }
+
+        function doLogout() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            showTab(0);
+        }
+
+        function showTab(index) {
+            var tabs = document.querySelectorAll('.nav-tab');
+            var contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(function(tab, i) {
+                if (i === index) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            contents.forEach(function(content, i) {
+                if (i === index) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        function toggleTroubleshoot(section) {
+            var element = document.getElementById('troubleshoot-' + section);
+            var isHidden = element.classList.contains('hidden');
+            
+            // Close all other troubleshooting sections
+            var allSections = ['power', 'leak', 'noise', 'pressure', 'dry', 'marks', 'error'];
+            allSections.forEach(function(s) {
+                document.getElementById('troubleshoot-' + s).classList.add('hidden');
+            });
+            
+            // Toggle the clicked section
+            if (isHidden) {
+                element.classList.remove('hidden');
+            }
+        }
+
+        function changeQty(item, delta) {
+            cart[item] = Math.max(0, cart[item] + delta);
+            document.getElementById(item + '-qty').textContent = cart[item];
+            
+            if (cart[item] === 0) {
+                document.getElementById(item + '-minus').disabled = true;
+            } else {
+                document.getElementById(item + '-minus').disabled = false;
+            }
+            
+            updateOrderSummary();
+        }
+
+        function updateOrderSummary() {
+            var total = cart.masks + cart.cushion + cart.headgear + cart.elbow + cart.tubing + cart.filters + cart.humidifier;
+            
+            if (total > 0) {
+                document.getElementById('orderSummary').classList.remove('hidden');
+            } else {
+                document.getElementById('orderSummary').classList.add('hidden');
+            }
+        }
+
+        function submitOrder() {
+            var items = [];
+            if (cart.masks > 0) items.push(cart.masks + 'x Complete CPAP Mask (ResMed AirFit F20 Medium)');
+            if (cart.cushion > 0) items.push(cart.cushion + 'x Mask Cushion (ResMed AirFit F20 Medium)');
+            if (cart.headgear > 0) items.push(cart.headgear + 'x Headgear/Straps (ResMed AirFit F20)');
+            if (cart.elbow > 0) items.push(cart.elbow + 'x Elbow/Swivel (ResMed AirFit F20)');
+            if (cart.tubing > 0) items.push(cart.tubing + 'x Tubing (ResMed SlimLine 6ft)');
+            if (cart.filters > 0) items.push(cart.filters + 'x Filters (ResMed Ultra-Fine)');
+            if (cart.humidifier > 0) items.push(cart.humidifier + 'x Humidifier Chamber (ResMed ClimateLineAir)');
+            
+            // Generate email preview
+            var today = new Date();
+            var dateStr = today.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][today.getMonth()] + ' ' + today.getFullYear();
+            var timeStr = today.getHours().toString().padStart(2, '0') + ':' + today.getMinutes().toString().padStart(2, '0');
+            
+            var emailPreview = '═══════════════════════════════════════\n';
+            emailPreview += 'EMAIL SENT TO: cpap.orders@rbh.nhs.uk\n';
+            emailPreview += '═══════════════════════════════════════\n\n';
+            emailPreview += 'Subject: NEW ORDER - John Smith (RBH-SV-12345)\n\n';
+            emailPreview += '--- ORDER DETAILS ---\n\n';
+            emailPreview += 'Patient Name: John Smith\n';
+            emailPreview += 'NHS Number: 1234567890\n';
+            emailPreview += 'Patient ID: RBH-SV-12345\n';
+            emailPreview += 'Device: ResMed AirSense 10 AutoSet\n\n';
+            emailPreview += 'ITEMS ORDERED:\n';
+            items.forEach(function(item) {
+                emailPreview += '  • ' + item + '\n';
+            });
+            emailPreview += '\nSTATUS: Auto-approved (within allowance)\n';
+            emailPreview += '\nOrder submitted: ' + dateStr + ', ' + timeStr + '\n';
+            emailPreview += '\n--- PATIENT CONTACT ---\n';
+            emailPreview += 'Phone: 07XXX XXXXXX\n';
+            emailPreview += 'Email: john.smith@example.com\n';
+            emailPreview += '\n═══════════════════════════════════════\n';
+            
+            alert('✓ Order submitted successfully!\n\n' + emailPreview + '\nYour items will be dispatched within 3-5 working days.');
+            
+            cart = { masks: 0, cushion: 0, headgear: 0, elbow: 0, tubing: 0, filters: 0, humidifier: 0 };
+            document.getElementById('masks-qty').textContent = '0';
+            document.getElementById('cushion-qty').textContent = '0';
+            document.getElementById('headgear-qty').textContent = '0';
+            document.getElementById('elbow-qty').textContent = '0';
+            document.getElementById('tubing-qty').textContent = '0';
+            document.getElementById('filters-qty').textContent = '0';
+            document.getElementById('humidifier-qty').textContent = '0';
+            updateOrderSummary();
+            showTab(3);
+        }
+
+        function submitSupport(e) {
+            e.preventDefault();
+            
+            var type = document.getElementById('supportType').value;
+            var desc = document.getElementById('supportDesc').value;
+            var urgent = document.getElementById('urgent').checked;
+            
+            var typeLabels = {
+                technical: 'Technical Support',
+                callback: 'Clinician Callback',
+                equipment: 'Equipment Concern',
+                other: 'General Query'
+            };
+            
+            // Determine email destination based on request type
+            var emailTo = '';
+            if (type === 'callback') {
+                emailTo = 'cpap.clinical@rbh.nhs.uk';
+            } else {
+                emailTo = 'cpap.support@rbh.nhs.uk';
+            }
+            
+            // Generate email preview
+            var today = new Date();
+            var dateStr = today.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][today.getMonth()] + ' ' + today.getFullYear();
+            var timeStr = today.getHours().toString().padStart(2, '0') + ':' + today.getMinutes().toString().padStart(2, '0');
+            
+            var emailPreview = '═══════════════════════════════════════\n';
+            emailPreview += 'EMAIL SENT TO: ' + emailTo + '\n';
+            emailPreview += '═══════════════════════════════════════\n\n';
+            emailPreview += 'Subject: ' + (urgent ? '🔴 URGENT - ' : '') + typeLabels[type] + ' - John Smith (RBH-SV-12345)\n\n';
+            emailPreview += '--- REQUEST DETAILS ---\n\n';
+            emailPreview += 'Patient Name: John Smith\n';
+            emailPreview += 'NHS Number: 1234567890\n';
+            emailPreview += 'Patient ID: RBH-SV-12345\n';
+            emailPreview += 'Device: ResMed AirSense 10 AutoSet\n\n';
+            emailPreview += 'Request Type: ' + typeLabels[type] + '\n';
+            emailPreview += 'Priority: ' + (urgent ? '🔴 URGENT' : 'Routine') + '\n\n';
+            emailPreview += 'DESCRIPTION:\n';
+            emailPreview += desc + '\n\n';
+            emailPreview += 'Submitted: ' + dateStr + ', ' + timeStr + '\n';
+            emailPreview += '\n--- PATIENT CONTACT ---\n';
+            emailPreview += 'Phone: 07XXX XXXXXX\n';
+            emailPreview += 'Email: john.smith@example.com\n';
+            if (urgent) {
+                emailPreview += '\n⚠️ URGENT REQUEST - Contact within 4 hours (working hours)\n';
+            }
+            emailPreview += '\n═══════════════════════════════════════\n';
+            
+            var msg = '✓ Support request submitted successfully!\n\n' + emailPreview + '\n';
+            if (urgent) {
+                msg += 'A technician will contact you within 4 hours during working hours (9am-5pm, Mon-Fri).';
+            } else {
+                msg += 'We will contact you within 2 working days.';
+            }
+            
+            alert(msg);
+            e.target.reset();
+            showTab(3);
+            
+            return false;
+        }
+
+        // Initialize disabled buttons
+        document.getElementById('masks-minus').disabled = true;
+        document.getElementById('cushion-minus').disabled = true;
+        document.getElementById('headgear-minus').disabled = true;
+        document.getElementById('elbow-minus').disabled = true;
+        document.getElementById('tubing-minus').disabled = true;
+        document.getElementById('filters-minus').disabled = true;
+        document.getElementById('humidifier-minus').disabled = true;
+    </script>
+</body>
+</html>
